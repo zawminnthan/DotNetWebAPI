@@ -1,3 +1,4 @@
+using DotNetWebAPI.Components;
 using DotNetWebAPI.Daos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +50,9 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+
+// Use custom IP whitelist middleware
+app.UseMiddleware<IpWhitelistMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
