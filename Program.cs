@@ -48,6 +48,9 @@ builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(MappingProfiles)); // You can also specify the assembly or profile class directly
+
 var app = builder.Build();
 
 

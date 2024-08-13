@@ -1,11 +1,14 @@
-﻿using DotNetWebAPI.Daos;
+﻿using AutoMapper;
+using DotNetWebAPI.Daos;
 using DotNetWebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace DotNetWebAPI.Controllers
 {
@@ -15,17 +18,24 @@ namespace DotNetWebAPI.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<AuthController> _logger;
+        private readonly IMapper _mapper;
 
-        public AuthController(ApplicationDbContext context, ILogger<AuthController> logger)
+        public AuthController(ApplicationDbContext context, ILogger<AuthController> logger, IMapper mapper)
         {
             _context = context;
             _logger = logger;
+            _mapper = mapper;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegistrationModel model)
         {
             _logger.LogInformation("AuthController.Register: User registered successfully with model {@Model}", model);
+
+
+            UserRegistrationModel1 model1 = _mapper.Map<UserRegistrationModel1>(model);
+
+            _logger.LogInformation("Test data {@Model}", model1);
 
             if (await _context.Users.AnyAsync(u => u.Username == model.Username))
                 return Conflict("Username already exists.");
@@ -77,7 +87,18 @@ namespace DotNetWebAPI.Controllers
 
     public class UserRegistrationModel
     {
+        [JsonPropertyName("username")]
         public string Username { get; set; }
+
+        [JsonPropertyName("password")]
+        public string Password { get; set; }
+    }
+
+    public class UserRegistrationModel1
+    {
+        
+        public string Username { get; set; }
+        
         public string Password { get; set; }
     }
 
